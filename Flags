@@ -1,0 +1,26 @@
+from hub import light_matrix
+import runloop
+import motor 
+from hub import port
+from hub import motion_sensor
+import distance_sensor
+import motor_pair
+
+async def main():
+    motor_pair.unpair
+    motor_pair.pair(motor_pair.PAIR_1, port.A, port.C)    
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1,891,0)
+    motor.run_for_degrees(port.B, -300, 360)
+    motion_sensor.set_yaw_face(motion_sensor.FRONT)
+    motion_sensor.reset_yaw(0)
+    while motion_sensor.tilt_angles()[0]<125:
+        motor_pair.move(motor_pair.PAIR_1,-100,velocity=100)
+    motor_pair.stop(motor_pair.PAIR_1)
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1,343,0)
+    motor.run_for_degrees(port.B, 300, 360)
+
+
+
+      
+
+runloop.run(main())
