@@ -1,0 +1,75 @@
+import runloop
+import distance_sensor
+import motor
+from hub import port
+from hub import motion_sensor
+import motor_pair
+
+async def main():
+    motor_pair.unpair
+    motor_pair.pair(motor_pair.PAIR_1, port.A, port.C)
+    #this is silo
+    motor.run_for_degrees(port.B, 300, 360)
+    while distance_sensor.distance(port.F)>70 or distance_sensor.distance(port.F)==-1:
+     motor_pair.move(motor_pair.PAIR_1,0, velocity=250)
+    motor_pair.stop(motor_pair.PAIR_1)
+    '''
+    await motor.run_for_degrees(port.B,-300, 600)
+    await motor.run_for_degrees(port.B, 300, 600)
+    await motor.run_for_degrees(port.B,-300, 600)
+    await motor.run_for_degrees(port.B, 300, 600)
+    await motor.run_for_degrees(port.B,-300, 600)
+    await motor.run_for_degrees(port.B, 300, 600)
+    await motor.run_for_degrees(port.B,-300, 600)
+    '''
+    await motor.run_for_degrees(port.B, 300,600)
+
+    motion_sensor.set_yaw_face(motion_sensor.FRONT)
+    motion_sensor.reset_yaw(0)
+    while motion_sensor.tilt_angles()[0]<340:
+        motor_pair.move(motor_pair.PAIR_1,-100,velocity=100)
+    motor_pair.stop(motor_pair.PAIR_1)
+
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 450, 0)
+
+
+    motion_sensor.set_yaw_face(motion_sensor.FRONT)
+    motion_sensor.reset_yaw(0)
+    while motion_sensor.tilt_angles()[0]>-450:
+        motor_pair.move(motor_pair.PAIR_1,100,velocity=100)
+    motor_pair.stop(motor_pair.PAIR_1)
+    
+    await motor.run_to_absolute_position(port.B,87,50,stop=motor.BRAKE)
+
+    motion_sensor.set_yaw_face(motion_sensor.FRONT)
+    motion_sensor.reset_yaw(0)
+    while motion_sensor.tilt_angles()[0]<250:
+        motor_pair.move(motor_pair.PAIR_1,-100,velocity=100)
+    motor_pair.stop(motor_pair.PAIR_1)
+       
+
+    await motor_pair.move_for_time(motor_pair.PAIR_1, 250,-10,velocity =-400)
+    await motor.run_for_degrees(port.B,-200,200)
+    await motor_pair.move_for_time(motor_pair.PAIR_1, 250,-50,velocity =-250)
+    
+
+    motion_sensor.set_yaw_face(motion_sensor.FRONT)
+    motion_sensor.reset_yaw(0)
+    while motion_sensor.tilt_angles()[0]>-550:
+        motor_pair.move(motor_pair.PAIR_1,100,velocity=300)
+    motor_pair.stop(motor_pair.PAIR_1)
+
+    await motor.run_to_absolute_position(port.B,103,50,stop=motor.BRAKE)
+
+    motion_sensor.set_yaw_face(motion_sensor.FRONT)
+    motion_sensor.reset_yaw(0)
+    while motion_sensor.tilt_angles()[0]<450:
+        motor_pair.move(motor_pair.PAIR_1,-100,velocity=100)
+    motor_pair.stop(motor_pair.PAIR_1)
+
+    await motor_pair.move_for_time(motor_pair.PAIR_1, 3000,10,velocity =-300)
+
+    
+
+    
+runloop.run(main())
